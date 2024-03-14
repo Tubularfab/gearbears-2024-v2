@@ -6,6 +6,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Utils.InputsManager.SwerveInputsManager;
 import frc.robot.commands.SwerveJoystickCmd;
@@ -14,6 +15,23 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Shooter;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
+
+import com.revrobotics.CANSparkMax;
+
+import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+
+
+
 
 
 
@@ -26,6 +44,8 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer
 {
     // The robot's subsystems and commands are defined here...
+    private final Shooter m_shooter = new Shooter();
+    private final Intake m_intake = new Intake();
 
     
     // Replace with CommandPS4Controller or CommandJoystick if needed
@@ -67,6 +87,15 @@ public class RobotContainer
         // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
         // cancelling on release.
         new Trigger(driverController::getBButtonPressed).onTrue(Commands.runOnce(SwerveSubsystem.getInstance()::zeroHeading, SwerveSubsystem.getInstance()));
+        //new Trigger(driverController::get).onTrue(Commands.runOnce(SwerveSubsystem.getInstance()::zeroHeading, SwerveSubsystem.getInstance()));
+        new Trigger(driverController::getLeftBumper).whileTrue(new ParallelCommandGroup(
+            m_shooter.getRunReverseShooter(),
+            m_intake.getRunOutakeCommand()
+            )
+         );
+
+
+        
         
     }
     
