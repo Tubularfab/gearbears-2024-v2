@@ -100,8 +100,10 @@ public class RobotContainer
          //Run reverse intake when A button is pressed (temp, change to LB when possible)
         new Trigger(driverController::getXButton).whileTrue(new SequentialCommandGroup(
         m_shooter.getStartShooterCommand(),
-        new WaitCommand(1.5),
-        m_intake.getRunIntakeCommand()));
+        new WaitCommand(1),
+        m_intake.getRunIntakeCommand(),
+        new WaitCommand(2),
+        m_shooter.getStopCommand()));
 
         //shoot and intake (to get enough oomph into speaker) while X button is pressed (temp, change to RB)
         new Trigger(driverController::getRightBumper).whileTrue(m_shooter.getShooterCommand()); //shoot when RB Button is pressed (temp, change to RT)
@@ -131,6 +133,7 @@ public class RobotContainer
 
             m_intake.getRunIntakeCommand().withTimeout(.5),
             m_shooter.getStopCommand() //run the intake then stop intake and shooter after .5 seconds
+
 
 
         
