@@ -23,13 +23,17 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 
 import com.revrobotics.CANSparkMax;
-
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
+import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 
 
@@ -88,11 +92,24 @@ public class RobotContainer
         // cancelling on release.
         new Trigger(driverController::getBButtonPressed).onTrue(Commands.runOnce(SwerveSubsystem.getInstance()::zeroHeading, SwerveSubsystem.getInstance()));
         //new Trigger(driverController::get).onTrue(Commands.runOnce(SwerveSubsystem.getInstance()::zeroHeading, SwerveSubsystem.getInstance()));
-        new Trigger(driverController::getLeftBumper).whileTrue(new ParallelCommandGroup(
+        new Trigger(driverController::getAButtonPressed).whileTrue(new ParallelCommandGroup( 
             m_shooter.getRunReverseShooter(),
             m_intake.getRunOutakeCommand()
             )
          );
+         //Run reverse intake when A button is pressed (temp, change to LB when possible)
+        new Trigger(driverController::getXButtonPressed).whileTrue(new SequentialCommandGroup(
+        m_shooter.getStartShooterCommand(),
+        new WaitCommand(1.5),
+        m_intake.getRunIntakeCommand()));
+
+        //shoot and intake (to get enough oomph into speaker) while X button is pressed (temp, change to RB)
+        new Trigger(driverController::getRightBumper).whileTrue(m_shooter.getShooterCommand()); //shoot when RB Button is pressed (temp, change to RT)
+        new Trigger(driverController::getLeftBumper).whileTrue(m_intake.getRunIntakeCommand()); //intake when LB is pressed(temp, change to LT)
+        new Trigger(driverController::getYButtonPressed).whileTrue(m_shooter.getSlowShootCommand()); // slow shoot when Y button pressed for speaker (not temp :)
+
+
+
 
 
         
@@ -108,6 +125,19 @@ public class RobotContainer
     public Command getAutonomousCommand()
     {
         // An example command will be run in autonomous
-        return Commands.none();
+        return new SequentialCommandGroup(
+            m_shooter.getStartShooterCommand(),
+            new WaitCommand(.50), //start shooter to use intake, get motors fired up
+
+            m_intake.getRunIntakeCommand().withTimeout(.5),
+            m_shooter.getStopCommand(), //run the intake then stop intake and shooter after .5 seconds
+
+
+        
+        );
+
+
+
+
     }
 }
