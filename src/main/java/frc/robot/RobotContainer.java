@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 
+import com.ctre.phoenix6.mechanisms.swerve.SwerveModule;
 import com.revrobotics.CANSparkMax;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
@@ -50,7 +51,6 @@ public class RobotContainer
     // The robot's subsystems and commands are defined here...
     private final Shooter m_shooter = new Shooter();
     private final Intake m_intake = new Intake();
-
     
     // Replace with CommandPS4Controller or CommandJoystick if needed
     private final XboxController driverController =
@@ -133,7 +133,18 @@ public class RobotContainer
 
             m_intake.getRunIntakeCommand().withTimeout(.5),
             m_shooter.getStopCommand() //run the intake then stop intake and shooter after .5 seconds
+            // new ParallelCommandGroup( < - - Run Drive Straight and the Intake at the same time
+            //     SwerveSubsytem.getDriveStraightCommand(.3).withTimeout(2),
+            //     m_intake.getRunIntakeCommand().withTimeout(2)),
+            // swerveSubsytem.getDriveStraightCommand(-.3).withTimeout(2),
+            // new WaitCommand(.50),
+            // m_intake.getRunOuttakeCommand(), < - - Something to run this command from Intake.Java so the note recedes back into the robot far enough to shoot it with the intake
+            // m_shooter.getStartShooterCommand(), < - - just repeat the starting code again to fire the note into the speaker from stationary point
+            // m_intake.getRunIntakeCommand().withTimeout(seconds:.5)
+            // m_shooter.getStopCommand()
 
+            // );
+            
 
 
         
