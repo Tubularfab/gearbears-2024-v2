@@ -130,7 +130,7 @@ public class RobotContainer
             new WaitCommand(.50), //start shooter to use intake, get motors fired up
 
             m_intake.getRunIntakeCommand().withTimeout(.5),
-            m_shooter.getStopCommand(), //run the intake then stop intake and shooter after .5 seconds
+            m_shooter.getStopCommand() //run the intake then stop intake and shooter after .5 seconds
 
 
         
