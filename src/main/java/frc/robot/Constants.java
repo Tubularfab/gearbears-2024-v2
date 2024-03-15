@@ -64,14 +64,14 @@ public final class Constants
    public static class OperatorConstants {
     public static final int DRIVER_CONTROLLER_PORT = 0;
     public static final int MECHANISM_CONTROLLER_PORT = 1;
-    public static double kTeleDriveMaxAngularSpeedRadiansPerSecond = 1;
-    public static double kTeleDriveMaxSpeedMetersPerSecond = 1.0; //Test values
+    public static double kTeleDriveMaxAngularSpeedRadiansPerSecond = 2.0;
+    public static double kTeleDriveMaxSpeedMetersPerSecond = 2.0; //Test values
     public static double kTeleDriveMaxAccelerationUnitsPerSecond = .5; //Tst Values
     public static double kTeleDriveMaxAngularAccelerationUnitsPerSecond = 1;
 }
 
 public static class IOConstants {
-    public static final double kDeadband = 0.25;
+    public static final double kDeadband = 0.02;
 }
 
 public static class IntakeConstants {
