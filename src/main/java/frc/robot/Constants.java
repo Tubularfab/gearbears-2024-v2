@@ -25,7 +25,7 @@ public final class Constants
         public static final double kDriveMotorGearRatio = 1 / 6.75;
         public static final double kTurningMotorGearRatio = 1 / (150/7);
         public static final double kWheelCircumferenceMeters = kWheelDiameterMeters * Math.PI;
-        public static final double kPhysicalMaxSpeedMetersPerSec = 2; // Untested
+        public static final double kPhysicalMaxSpeedMetersPerSec = 1; // Untested
         public static final double kDriveRotationsToMeters = kDriveMotorGearRatio*kWheelCircumferenceMeters;
         public static final double kDriveRPMToMetersPerSec = kDriveRotationsToMeters*60;
         public static final double kTurnRotationsToAngelDeg = kTurningMotorGearRatio*360;
