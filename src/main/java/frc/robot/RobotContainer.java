@@ -6,6 +6,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Utils.InputsManager.SwerveInputsManager;
@@ -19,11 +20,16 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule;
 import com.revrobotics.CANSparkMax;
+
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
@@ -98,12 +104,12 @@ public class RobotContainer
             )
          );
          //Run reverse intake when A button is pressed (temp, change to LB when possible)
-        new Trigger(driverController::getXButton).whileTrue(new SequentialCommandGroup(
-        m_shooter.getStartShooterCommand(),
-        new WaitCommand(1),
-        m_intake.getRunIntakeCommand(),
-        new WaitCommand(2),
-        m_shooter.getStopCommand()));
+        // new Trigger(driverController::getXButton).whileTrue(new SequentialCommandGroup(
+        // m_shooter.getStartShooterCommand(),
+        // new WaitCommand(1),
+        // m_intake.getRunIntakeCommand(),
+        // new WaitCommand(2),
+        // m_shooter.getStopCommand()));
 
         //shoot and intake (to get enough oomph into speaker) while X button is pressed (temp, change to RB)
         new Trigger(driverController::getRightBumper).whileTrue(m_shooter.getShooterCommand()); //shoot when RB Button is pressed (temp, change to RT)
@@ -128,25 +134,45 @@ public class RobotContainer
     {
         // An example command will be run in autonomous
         return new SequentialCommandGroup(
-            m_shooter.getStartShooterCommand(),
-            new WaitCommand(.50), //start shooter to use intake, get motors fired up
+           m_shooter.getStartShooterCommand(),
+           new WaitCommand(.50), //start shooter to use intake, get motors fired up
 
+           m_intake.getRunIntakeCommand().withTimeout(.5),
+           m_shooter.getStopCommand(), //run the intake then stop intake and shooter after .5 seconds
+           new ParallelCommandGroup( 
+                new InstantCommand( 
+                    ()->SwerveSubsystem.getInstance().setModuleStates(
+                        Constants.PhysicalConstants.kDriveKinematics.toSwerveModuleStates(
+                            new ChassisSpeeds( Units.feetToMeters(-1)/2, 0, 0 )
+                        )
+                    )
+                , SwerveSubsystem.getInstance()
+                ).withTimeout(4),
+                 m_intake.getRunIntakeCommand().withTimeout(3)
+            ),
+            //),
+            new InstantCommand( 
+                    ()->SwerveSubsystem.getInstance().setModuleStates(
+                        Constants.PhysicalConstants.kDriveKinematics.toSwerveModuleStates(
+                            new ChassisSpeeds( Units.feetToMeters(1)/2, 0, 0 )
+                        )
+                    )
+                , SwerveSubsystem.getInstance()
+            ).withTimeout(4),
+            
+
+            //swerveSubsytem.getDriveStraightCommand(-.3).withTimeout(2),
+           // new WaitCommand(.50),
+             m_intake.getRunOutakeCommand().withTimeout(.5), //< - - Something to run this command from Intake.Java so the note recedes back into the robot far enough to shoot it with the intake
+            m_shooter.getStartShooterCommand(),
+            new WaitCommand(.50),  //< - - just repeat the starting code again to fire the note into the speaker from stationary point
             m_intake.getRunIntakeCommand().withTimeout(.5),
-            m_shooter.getStopCommand() //run the intake then stop intake and shooter after .5 seconds
-            // new ParallelCommandGroup( < - - Run Drive Straight and the Intake at the same time
-            //     SwerveSubsytem.getDriveStraightCommand(.3).withTimeout(2),
-            //     m_intake.getRunIntakeCommand().withTimeout(2)),
-            // swerveSubsytem.getDriveStraightCommand(-.3).withTimeout(2),
-            // new WaitCommand(.50),
-            // m_intake.getRunOuttakeCommand(), < - - Something to run this command from Intake.Java so the note recedes back into the robot far enough to shoot it with the intake
-            // m_shooter.getStartShooterCommand(), < - - just repeat the starting code again to fire the note into the speaker from stationary point
-            // m_intake.getRunIntakeCommand().withTimeout(seconds:.5)
-            // m_shooter.getStopCommand()
+            m_shooter.getStopCommand()
 
             // );
             
 
-
+            
         
         );
 
