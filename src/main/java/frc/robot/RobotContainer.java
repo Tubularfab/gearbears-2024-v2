@@ -104,14 +104,11 @@ public class RobotContainer
             )
          );
          //Run reverse intake when A button is pressed (temp, change to LB when possible)
-        // new Trigger(driverController::getXButton).whileTrue(new SequentialCommandGroup(
-        // m_shooter.getStartShooterCommand(),
-        // new WaitCommand(1),
-        // m_intake.getRunIntakeCommand(),
-        // new WaitCommand(2),
-        // m_shooter.getStopCommand()));
+        new Trigger(driverController::getXButton).whileTrue(new ParallelCommandGroup(
+            m_shooter.getShooterCommand().withTimeout(1),
+            m_intake.getRunIntakeCommand().withTimeout(2)));
 
-        //shoot and intake (to get enough oomph into speaker) while X button is pressed (temp, change to RB)
+          //shoot and intake (to get enough oomph into speaker) while X button is pressed (temp, change to RB)
         new Trigger(driverController::getRightBumper).whileTrue(m_shooter.getShooterCommand()); //shoot when RB Button is pressed (temp, change to RT)
         new Trigger(driverController::getLeftBumper).whileTrue(m_intake.getRunIntakeCommand()); //intake when LB is pressed(temp, change to LT)
         new Trigger(driverController::getYButton).whileTrue(m_shooter.getSlowShootCommand()); // slow shoot when Y button pressed for speaker (not temp :)
