@@ -29,6 +29,7 @@ import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
@@ -135,28 +136,29 @@ public class RobotContainer
            new WaitCommand(.50), //start shooter to use intake, get motors fired up
 
            m_intake.getRunIntakeCommand().withTimeout(.5),
-           m_shooter.getStopCommand()
-           /*   //run the intake then stop intake and shooter after .5 seconds
+           m_shooter.getStopCommand(),
+              //run the intake then stop intake and shooter after .5 seconds
            new ParallelCommandGroup( 
-                new InstantCommand( 
+                new RunCommand( 
                     ()->SwerveSubsystem.getInstance().setModuleStates(
                         Constants.PhysicalConstants.kDriveKinematics.toSwerveModuleStates(
-                            new ChassisSpeeds( Units.feetToMeters(-1)/2, 0, 0 )
+                            new ChassisSpeeds( Units.feetToMeters(1.0)/2.0, 0.0, 0.0 )
                         )
                     )
                 , SwerveSubsystem.getInstance()
                 ).withTimeout(4),
-                 m_intake.getRunIntakeCommand().withTimeout(3)
+                 m_intake.getRunIntakeCommand().withTimeout(4)
             ),
             //),
-            new InstantCommand( 
+            new RunCommand( 
                     ()->SwerveSubsystem.getInstance().setModuleStates(
                         Constants.PhysicalConstants.kDriveKinematics.toSwerveModuleStates(
-                            new ChassisSpeeds( Units.feetToMeters(1)/2, 0, 0 )
+                            new ChassisSpeeds( Units.feetToMeters(-1.0)/2.0, 0, 0.0 ))
                         )
-                    )
+                
                 , SwerveSubsystem.getInstance()
             ).withTimeout(4),
+            new InstantCommand(()->SwerveSubsystem.getInstance().stopSwerveModuleMotors(), SwerveSubsystem.getInstance()),
             
 
             //swerveSubsytem.getDriveStraightCommand(-.3).withTimeout(2),
@@ -166,7 +168,7 @@ public class RobotContainer
             new WaitCommand(.50),  //< - - just repeat the starting code again to fire the note into the speaker from stationary point
             m_intake.getRunIntakeCommand().withTimeout(.5),
             m_shooter.getStopCommand()
-            */
+            
             );
             
 
