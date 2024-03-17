@@ -138,6 +138,7 @@ public class RobotContainer
            m_intake.getRunIntakeCommand().withTimeout(.5),
            m_shooter.getStopCommand(),
               //run the intake then stop intake and shooter after .5 seconds
+              // delete comma then add first asterisk here to disable movement ok mohammed :thumbsup:
            new ParallelCommandGroup( 
                 new RunCommand( 
                     ()->SwerveSubsystem.getInstance().setModuleStates(
@@ -171,7 +172,7 @@ public class RobotContainer
             new WaitCommand(.50),  //< - - just repeat the starting code again to fire the note into the speaker from stationary point
             m_intake.getRunIntakeCommand().withTimeout(.5),
             m_shooter.getStopCommand()
-            
+            //Asterisk goes here to disable movement 
             );
             
 
