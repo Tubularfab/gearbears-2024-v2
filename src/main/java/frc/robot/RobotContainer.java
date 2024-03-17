@@ -163,7 +163,10 @@ public class RobotContainer
 
             //swerveSubsytem.getDriveStraightCommand(-.3).withTimeout(2),
            // new WaitCommand(.50),
-             m_intake.getRunOutakeCommand().withTimeout(.5), //< - - Something to run this command from Intake.Java so the note recedes back into the robot far enough to shoot it with the intake
+           new ParallelCommandGroup(
+           m_intake.getRunOutakeCommand().withTimeout(.5),
+           m_shooter.getRunReverseShooter().withTimeout(.5)
+           ), //< - - Something to run this command from Intake.Java so the note recedes back into the robot far enough to shoot it with the intake
             m_shooter.getStartShooterCommand(),
             new WaitCommand(.50),  //< - - just repeat the starting code again to fire the note into the speaker from stationary point
             m_intake.getRunIntakeCommand().withTimeout(.5),
