@@ -65,7 +65,7 @@ public final class Constants
     public static final int DRIVER_CONTROLLER_PORT = 0;
     public static final int MECHANISM_CONTROLLER_PORT = 1;
     public static double kTeleDriveMaxAngularSpeedRadiansPerSecond = 3.0;
-    public static double kTeleDriveMaxSpeedMetersPerSecond = 4.0; //Test values
+    public static double kTeleDriveMaxSpeedMetersPerSecond = 2.75; //Test values
     public static double kTeleDriveMaxAccelerationUnitsPerSecond = 1.0; //Tst Values
     public static double kTeleDriveMaxAngularAccelerationUnitsPerSecond = 1;
 }
